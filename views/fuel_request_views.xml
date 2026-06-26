@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vue Liste (tree) -->
+    <record id="view_fuel_request_tree" model="ir.ui.view">
+        <field name="name">fuel.request.tree</field>
+        <field name="model">fuel.request</field>
+        <field name="arch" type="xml">
+            <tree string="Demandes de carburant">
+                <field name="reference"/>
+                <field name="customer_id"/>
+                <field name="request_date"/>
+                <field name="fuel_type"/>
+                <field name="quantity"/>
+                <field name="total_amount" sum="Total"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"
+                       decoration-info="state == 'submitted'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Vue Formulaire (form) -->
+    <record id="view_fuel_request_form" model="ir.ui.view">
+        <field name="name">fuel.request.form</field>
+        <field name="model">fuel.request</field>
+        <field name="arch" type="xml">
+            <form string="Demande de carburant">
+                <header>
+                    <button name="action_submit" type="object" string="Soumettre"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" string="Approuver"
+                            class="btn-primary" invisible="state != 'submitted'"/>
+                    <button name="action_reject" type="object" string="Rejeter"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_reset_to_draft" type="object" string="Remettre en brouillon"
+                            invisible="state != 'rejected'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,approved,rejected"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="customer_id"/>
+                            <field name="request_date"/>
+                            <field name="fuel_type"/>
+                        </group>
+                        <group>
+                            <field name="quantity"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="unit_price"/>
+                            <field name="total_amount"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="notes" placeholder="Remarques libres..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vue Recherche (search) -->
+    <record id="view_fuel_request_search" model="ir.ui.view">
+        <field name="name">fuel.request.search</field>
+        <field name="model">fuel.request</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher demandes de carburant">
+                <field name="reference"/>
+                <field name="customer_id"/>
+                <field name="request_date"/>
+                <filter string="Brouillon" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Soumis" name="filter_submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter string="Approuvé" name="filter_approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Rejeté" name="filter_rejected" domain="[('state', '=', 'rejected')]"/>
+                <separator/>
+                <filter string="Date de demande" name="filter_date" date="request_date"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="État" name="group_by_state" context="{'group_by': 'state'}"/>
+                    <filter string="Type de carburant" name="group_by_fuel_type" context="{'group_by': 'fuel_type'}"/>
+                    <filter string="Client" name="group_by_customer" context="{'group_by': 'customer_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fuel_request" model="ir.actions.act_window">
+        <field name="name">Demandes de carburant</field>
+        <field name="res_model">fuel.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_fuel_request_search"/>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_fuel_request_root" name="Carburant"/>
+    <menuitem id="menu_fuel_request_main" name="Demandes"
+              parent="menu_fuel_request_root" action="action_fuel_request"/>
+
+</odoo>
