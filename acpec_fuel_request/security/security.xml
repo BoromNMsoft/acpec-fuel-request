@@ -20,6 +20,12 @@
             <field name="implied_ids" eval="[(4, ref('group_fuel_user'))]"/>
         </record>
 
+        <!-- L'administrateur système hérite automatiquement du groupe Manager Carburant.
+             Évite que le module soit inaccessible à l'admin après installation. -->
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('group_fuel_manager'))]"/>
+        </record>
+
         <!-- Record rule : un utilisateur du groupe "Utilisateur" ne voit que ses propres demandes -->
         <record id="rule_fuel_request_user_own" model="ir.rule">
             <field name="name">Demande carburant : utilisateur voit ses propres demandes</field>
