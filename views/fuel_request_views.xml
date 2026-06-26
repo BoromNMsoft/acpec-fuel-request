@@ -62,6 +62,7 @@
                         <field name="notes" placeholder="Remarques libres..."/>
                     </group>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

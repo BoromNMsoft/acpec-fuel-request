@@ -4,6 +4,7 @@ from odoo import models, fields, api
 class FuelRequest(models.Model):
     _name = 'fuel.request'
     _description = 'Demande de carburant'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     reference = fields.Char(string="Référence", readonly=True, copy=False, default="Nouveau")
     customer_id = fields.Many2one('res.partner', string="Client", required=True)
