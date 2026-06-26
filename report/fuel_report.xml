@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Action de rapport : déclenche la génération PDF -->
+    <record id="action_report_fuel_request" model="ir.actions.report">
+        <field name="name">Demande de carburant</field>
+        <field name="model">fuel.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">acpec_fuel_request.report_fuel_request_document</field>
+        <field name="report_file">acpec_fuel_request.report_fuel_request_document</field>
+        <field name="binding_model_id" ref="model_fuel_request"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'Demande_Carburant_%s' % (object.reference)</field>
+    </record>
+
+    <!-- Template QWeb : structure du document -->
+    <template id="report_fuel_request_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Demande de carburant <span t-field="doc.reference"/></h2>
+
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <strong>Client :</strong>
+                                <p t-field="doc.customer_id"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Date de la demande :</strong>
+                                <p t-field="doc.request_date"/>
+                            </div>
+                        </div>
+
+                        <table class="table table-bordered mt-4">
+                            <thead>
+                                <tr>
+                                    <th>Type de carburant</th>
+                                    <th>Quantité</th>
+                                    <th>Prix unitaire</th>
+                                    <th>Montant total</th>
+                                    <th>État</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span t-field="doc.fuel_type"/></td>
+                                    <td><span t-field="doc.quantity"/></td>
+                                    <td><span t-field="doc.unit_price"/></td>
+                                    <td><span t-field="doc.total_amount"/></td>
+                                    <td><span t-field="doc.state"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="mt-4" t-if="doc.notes">
+                            <strong>Remarques :</strong>
+                            <p t-field="doc.notes"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
