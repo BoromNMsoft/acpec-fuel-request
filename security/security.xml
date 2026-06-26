@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Catégorie pour ranger nos groupes proprement dans Paramètres > Utilisateurs > Groupes -->
+        <record id="module_category_fuel" model="ir.module.category">
+            <field name="name">Gestion Carburant</field>
+        </record>
+
+        <!-- Groupe Utilisateur : accès restreint à ses propres demandes -->
+        <record id="group_fuel_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="category_id" ref="module_category_fuel"/>
+        </record>
+
+        <!-- Groupe Manager : accès complet -->
+        <record id="group_fuel_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="module_category_fuel"/>
+            <field name="implied_ids" eval="[(4, ref('group_fuel_user'))]"/>
+        </record>
+
+        <!-- Record rule : un utilisateur du groupe "Utilisateur" ne voit que ses propres demandes -->
+        <record id="rule_fuel_request_user_own" model="ir.rule">
+            <field name="name">Demande carburant : utilisateur voit ses propres demandes</field>
+            <field name="model_id" ref="model_fuel_request"/>
+            <field name="domain_force">[('create_uid', '=', user.id)]</field>
+            <field name="groups" eval="[(4, ref('group_fuel_user'))]"/>
+        </record>
+
+        <!-- Record rule : le manager voit tout, sans restriction -->
+        <record id="rule_fuel_request_manager_all" model="ir.rule">
+            <field name="name">Demande carburant : manager voit tout</field>
+            <field name="model_id" ref="model_fuel_request"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_fuel_manager'))]"/>
+        </record>
+
+    </data>
+</odoo>

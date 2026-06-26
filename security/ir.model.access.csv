@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_fuel_request_user,fuel.request.user,model_fuel_request,group_fuel_user,1,1,1,0
+access_fuel_request_manager,fuel.request.manager,model_fuel_request,group_fuel_manager,1,1,1,1
